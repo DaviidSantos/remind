@@ -7,7 +7,8 @@ mod file_tree;
 fn main() {
   tauri::Builder::default()
   .invoke_handler(tauri::generate_handler![
-    read_file_tree
+    read_file_tree,
+    create_folder
   ])
   .setup(|_| {
     folders::create_remind_folder_if_not_exists();
@@ -23,4 +24,9 @@ fn read_file_tree() -> file_tree::TreeNode {
     let remind_folder_path = documents_dir.join("Remind");
     let file_tree = file_tree::build_tree(remind_folder_path);
     file_tree
+}
+
+#[tauri::command]
+fn create_folder (path: &str) {
+  folders::create_new_folder(path)
 }
