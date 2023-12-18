@@ -6,13 +6,9 @@ interface PopoverTriggerProps {
 }
 
 const PopoverTrigger: FC<PopoverTriggerProps> = ({ children }) => {
-  const { isOpen, setIsOpen } = usePopoverContext();
-
-  const togglePopover = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return <button onClick={togglePopover}>{children}</button>;
+  const { setIsOpen } = usePopoverContext();
+  
+  return <button onClick={() => setIsOpen(true)}>{children}</button>;
 };
 
 export default PopoverTrigger;

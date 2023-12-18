@@ -17,7 +17,7 @@ const PopoverContent: FC<PopoverContentProps> = ({ children }) => {
       {isOpen && (
         <div
           ref={popoverRef}
-          className="rounded-md bg-zinc-900 border border-zinc-700 absolute top-10 p-3 shadow left-0 right-0 w-full"
+          className="rounded-md bg-zinc-900 border border-zinc-700 absolute top-10 p-3 shadow left-0 right-0 w-full z-50"
         >
           {children}
         </div>
