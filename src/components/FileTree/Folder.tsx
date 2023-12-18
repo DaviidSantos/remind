@@ -1,8 +1,14 @@
 import { FC, useState } from "react";
 import { TreeNode, useFileTreeContext } from "../../context/FileTreeContext";
-import { getNodeName } from "../../lib/utils";
+import { getNodeName, getPath } from "../../lib/utils";
 import File from "./File";
 import { AiOutlineFolder, AiOutlineFolderOpen } from "react-icons/ai";
+import ContextMenu from "../ContextMenu/ContextMenu";
+import ContextMenuTrigger from "../ContextMenu/ContextMenuTrigger";
+import ContextMenuContent from "../ContextMenu/ContextMenuContent";
+import ContextMenuItem from "../ContextMenu/ContextMenuItem";
+import { PiTrashThin } from "react-icons/pi";
+import { invoke } from "@tauri-apps/api";
 
 interface FolderProps {
   path: string | undefined;
@@ -11,28 +17,44 @@ interface FolderProps {
 
 const Folder: FC<FolderProps> = ({ path, children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { currentNode, setCurrentNode } = useFileTreeContext();
+  const { currentNode, setCurrentNode, readFileTree } = useFileTreeContext();
+
+  const deleteFolder = async function () {
+    const folderPath = getPath(path!).replace("\\", "/");
+
+    await invoke("delete_folder", { path: folderPath });
+    readFileTree();
+  };
 
   return (
-    <div>
-      <button
-        className={`flex items-center py-1 px-2 rounded-md break-all text-left ${
-          currentNode === path ? "bg-zinc-500/30" : ""
-        }`}
-        onClick={() => {
-          setIsOpen(!isOpen);
-          setCurrentNode(path!);
-        }}
-      >
-        {isOpen ? (
-          <AiOutlineFolderOpen className="text-zinc-200 h-4" />
-        ) : (
-          <AiOutlineFolder className="text-zinc-200 h-4" />
-        )}
-        <span className={`text-zinc-200 text-sm ml-2`}>
-          {getNodeName(path!)}
-        </span>
-      </button>
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <button
+          className={`flex items-center py-1 px-2 rounded-md break-all text-left ${
+            currentNode === path ? "bg-zinc-500/30" : ""
+          }`}
+          onClick={() => {
+            setIsOpen(!isOpen);
+            setCurrentNode(path!);
+          }}
+        >
+          {isOpen ? (
+            <AiOutlineFolderOpen className="text-zinc-200 h-4" />
+          ) : (
+            <AiOutlineFolder className="text-zinc-200 h-4" />
+          )}
+          <span className={`text-zinc-200 text-sm ml-2`}>
+            {getNodeName(path!)}
+          </span>
+        </button>
+      </ContextMenuTrigger>
+
+      <ContextMenuContent>
+        <ContextMenuItem action={deleteFolder}>
+          <PiTrashThin className="text-zinc-200" />
+          <span className="text-xs text-zinc-200">Apagar pasta</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
 
       {children && (
         <div
@@ -51,7 +73,7 @@ const Folder: FC<FolderProps> = ({ path, children }) => {
           ))}
         </div>
       )}
-    </div>
+    </ContextMenu>
   );
 };
 export default Folder;

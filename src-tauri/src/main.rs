@@ -8,7 +8,8 @@ fn main() {
   tauri::Builder::default()
   .invoke_handler(tauri::generate_handler![
     read_file_tree,
-    create_folder
+    create_folder,
+    delete_folder
   ])
   .setup(|_| {
     folders::create_remind_folder_if_not_exists();
@@ -29,4 +30,9 @@ fn read_file_tree() -> file_tree::TreeNode {
 #[tauri::command]
 fn create_folder (path: &str) {
   folders::create_new_folder(path)
+}
+
+#[tauri::command]
+fn delete_folder(path: &str) {
+  folders::delete_folder(path)
 }
