@@ -51,3 +51,22 @@ pub(crate) fn delete_folder(folder_path: &str) {
         }
     }
 }
+
+pub(crate) fn rename_folder(current_folder_name: &str, new_folder_name: &str) {
+    let documents_directory = match dirs::document_dir() {
+        Some(path) => path,
+        None => {
+            eprintln!("Failed to determine the documents directory.");
+            return;
+        }
+    };
+
+    let current_folder_path = documents_directory.join(current_folder_name);
+    let new_folder_path = documents_directory.join(new_folder_name);
+
+    if current_folder_path.exists() {
+        if let Err(err) = fs::rename(&current_folder_path, &new_folder_path) {
+            eprintln!("Failed to rename folder {:?}: to {:?} {}", new_folder_path, new_folder_path, err)
+        }
+    }
+}
