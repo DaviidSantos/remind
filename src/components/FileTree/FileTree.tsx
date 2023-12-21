@@ -8,10 +8,10 @@ const FileTree = () => {
   return (
     fileTree && (
       <section
-        className="flex flex-col space-y-4 grow min-h-0 py-4"
+        className="grow min-h-0 py-4"
         onClick={() => setCurrentNode(fileTree.path)}
       >
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={(e) => e.stopPropagation()} className="flex flex-col">
           {fileTree?.children
             .sort((a, b) => {
               if (a.is_folder === b.is_folder) {
