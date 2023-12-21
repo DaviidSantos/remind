@@ -8,7 +8,7 @@ interface ContextMenuProps {
 const ContextMenu: FC<ContextMenuProps> = ({ children }) => {
   return (
     <ContextMenuContextProvider>
-      <div className="relative">{children}</div>
+      {children}
     </ContextMenuContextProvider>
   );
 };
