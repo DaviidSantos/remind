@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFileTreeContext } from "../../../context/FileTreeContext";
-import { getPath } from "../../../lib/utils";
+import { extractFolderPath, getPath } from "../../../lib/utils";
 import { invoke } from "@tauri-apps/api";
 import { usePopoverContext } from "../../../context/PopoverContext";
 
@@ -12,7 +12,9 @@ const CreateNote = () => {
   const createNote = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let notePath =
-      getPath(currentNode!).replace("\\", "/") + "/" + noteName;
+      extractFolderPath(getPath(currentNode!)).replace("\\", "/") +
+      "/" +
+      noteName;
 
     await invoke("create_note", { notePath });
     setIsOpen(false);

@@ -17,7 +17,7 @@ export const getItemPath = (path: string) => {
   parts.pop();
 
   const itemPath = parts.join("\\");
-  return itemPath
+  return itemPath;
 };
 
 export const getPath = (path: string) => {
@@ -29,4 +29,14 @@ export const getPath = (path: string) => {
   } else {
     return "";
   }
+};
+
+export const extractFolderPath = (input: string): string => {
+  const regex = /\\[^\\]+\.md$/;
+
+  if (regex.test(input)) {
+    return (input = input.replace(regex, ""));
+  }
+
+  return input;
 };
