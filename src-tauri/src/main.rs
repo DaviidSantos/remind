@@ -12,7 +12,8 @@ fn main() {
             create_folder,
             delete_folder,
             rename_folder,
-            create_note
+            create_note,
+            delete_note
         ])
         .setup(|_| {
             folders::create_remind_folder_if_not_exists();
@@ -47,4 +48,9 @@ fn rename_folder(current_path: &str, new_path: &str) {
 #[tauri::command]
 fn create_note(note_path: &str) {
     notes::create_note(note_path)
+}
+
+#[tauri::command]
+fn delete_note(path: &str) {
+    notes::delete_note(path)
 }
