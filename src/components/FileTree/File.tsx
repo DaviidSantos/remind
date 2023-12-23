@@ -8,7 +8,6 @@ import ContextMenuTrigger from "../ContextMenu/ContextMenuTrigger";
 import ContextMenuItem from "../ContextMenu/ContextMenuItem";
 import { PiPencilLight, PiTrashThin } from "react-icons/pi";
 import { invoke } from "@tauri-apps/api";
-import RenameFolder from "../Explorer/Action/RenameFolder";
 import RenameNote from "../Explorer/Action/RenameNote";
 
 interface FileProps {
