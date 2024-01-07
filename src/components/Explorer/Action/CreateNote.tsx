@@ -3,10 +3,12 @@ import { useFileTreeContext } from "../../../context/FileTreeContext";
 import { extractFolderPath, getPath } from "../../../lib/utils";
 import { invoke } from "@tauri-apps/api";
 import { usePopoverContext } from "../../../context/PopoverContext";
+import { useOpenNotesContext } from "../../../context/OpenNotesContext";
 
 const CreateNote = () => {
   const [noteName, setNoteName] = useState<string>("");
   const { currentNode, readFileTree } = useFileTreeContext();
+  const { openNotes, setOpenNotes, setActiveNote } = useOpenNotesContext();
   const { setIsOpen } = usePopoverContext();
 
   const createNote = async function (e: React.FormEvent<HTMLFormElement>) {
@@ -17,6 +19,17 @@ const CreateNote = () => {
       noteName;
 
     await invoke("create_note", { notePath });
+
+    const note = {
+      title: noteName + ".md",
+      content: "",
+      path: notePath,
+    };
+
+    const updatedNotes = [...openNotes, note];
+    setOpenNotes(updatedNotes);
+    setActiveNote(note.title);
+
     setIsOpen(false);
     readFileTree();
   };
