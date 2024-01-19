@@ -20,6 +20,7 @@ const FileTree = () => {
 
               return a.is_folder ? -1 : 1;
             })
+            .filter((node) => !node.path.endsWith(".db"))
             .map((node) => (
               <>
                 {node.is_folder ? (

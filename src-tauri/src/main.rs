@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod db;
 mod file_tree;
 mod folders;
 mod notes;
@@ -17,6 +18,7 @@ fn main() {
             rename_note
         ])
         .setup(|_| {
+            let _ = db::create_database();
             folders::create_remind_folder_if_not_exists();
             Ok(())
         })
