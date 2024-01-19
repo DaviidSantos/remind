@@ -3,6 +3,7 @@ import { MdOutlineCollectionsBookmark } from "react-icons/md";
 import { useOpenNotesContext } from "../../context/OpenNotesContext";
 import NoteEditorOption from "./NoteEditorOption";
 import NoteEditorOptions from "./NoteEditorOptions";
+import NoteEditor from "./NoteEditor";
 
 const NoteEditorContent = () => {
   const { openNotes, activeNote } = useOpenNotesContext();
@@ -37,6 +38,10 @@ const NoteEditorContent = () => {
           </span>
         </NoteEditorOption>
       </NoteEditorOptions>
+
+      {openNotes.map(
+        (note) => note.title === activeNote && <NoteEditor note={note} />
+      )}
     </div>
   );
 };

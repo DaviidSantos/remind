@@ -6,7 +6,7 @@ interface SideMenuContainerProps {
 
 const SideMenuContainer: FC<SideMenuContainerProps> = ({ children }) => {
   return (
-    <aside className="flex flex-col justify-between border-r border-r-zinc-700 bg-zinc-800 h-screen">
+    <aside className="flex flex-col justify-between border-r border-r-zinc-700 bg-zinc-800 h-screen sticky top-0">
       {children}
     </aside>
   );
