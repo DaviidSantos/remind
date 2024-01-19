@@ -20,8 +20,17 @@ import { OpenNotesContextProvider } from "../context/OpenNotesContext";
 import NoteEditorContainer from "../components/NoteEditor/NoteEditorContainer";
 import NoteEditorTabs from "../components/NoteEditor/Tabs/NoteEditorTabs";
 import NoteEditorContent from "../components/NoteEditor/NoteEditorContent";
+import { useExplorerContext } from "../context/ExplorerContext";
+import Favorits from "../components/Favorites/Favorits";
 
 const Anotacoes = () => {
+  const { explorerMode, setExplorerMode } = useExplorerContext();
+
+  const currentView = {
+    FILE_TREE: <FileTree />,
+    FAVORITS: <Favorits />,
+  }[explorerMode];
+
   return (
     <div className="flex w-full">
       <OpenNotesContextProvider>
@@ -42,7 +51,9 @@ const Anotacoes = () => {
 
               <Tooltip tooltip="Favoritos">
                 <ExplorerOption>
-                  <PiBookmarkSimple className="h-4 text-zinc-200" />
+                  <button onClick={() => setExplorerMode("FAVORITS")}>
+                    <PiBookmarkSimple className="h-4 text-zinc-200" />
+                  </button>
                 </ExplorerOption>
               </Tooltip>
 
@@ -73,7 +84,7 @@ const Anotacoes = () => {
               </Popover>
             </ExplorerOptions>
 
-            <FileTree />
+            {currentView}
           </FileTreeContextProvider>
         </ExplorerContainer>
 
