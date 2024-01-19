@@ -22,6 +22,7 @@ import NoteEditorTabs from "../components/NoteEditor/Tabs/NoteEditorTabs";
 import NoteEditorContent from "../components/NoteEditor/NoteEditorContent";
 import { useExplorerContext } from "../context/ExplorerContext";
 import Favorits from "../components/Favorites/Favorits";
+import Tags from "../components/Tags/Tags";
 
 const Anotacoes = () => {
   const { explorerMode, setExplorerMode } = useExplorerContext();
@@ -29,6 +30,7 @@ const Anotacoes = () => {
   const currentView = {
     FILE_TREE: <FileTree />,
     FAVORITS: <Favorits />,
+    TAGS: <Tags />,
   }[explorerMode];
 
   return (
@@ -45,7 +47,9 @@ const Anotacoes = () => {
 
               <Tooltip tooltip="Tags">
                 <ExplorerOption>
-                  <PiTagSimple className="h-4 text-zinc-200" />
+                  <button onClick={() => setExplorerMode("TAGS")}>
+                    <PiTagSimple className="h-4 text-zinc-200" />
+                  </button>
                 </ExplorerOption>
               </Tooltip>
 
