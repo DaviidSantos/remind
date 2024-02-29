@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useOpenNotesContext } from "../../../context/OpenNotesContext";
 import { AiOutlineClose } from "react-icons/ai";
+import { getNodeName } from "../../../lib/utils";
 
 interface TabProps {
   title: string;
@@ -34,7 +35,7 @@ const Tab: FC<TabProps> = ({ title }) => {
       }`}
     >
       <button onClick={() => setActiveNote(title)}>
-        {title.replace(".md", "")}
+        {getNodeName(title.replace(".md", ""))}
       </button>
       <button onClick={closeNote}>
         <AiOutlineClose />

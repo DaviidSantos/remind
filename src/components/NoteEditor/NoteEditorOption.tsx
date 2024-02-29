@@ -6,9 +6,9 @@ interface NoteEditorOptionProps {
 
 const NoteEditorOption: FC<NoteEditorOptionProps> = ({ children }) => {
   return (
-    <button className="flex items-center gap-2 text-zinc-200 group">
+    <div className="flex items-center gap-2 text-zinc-200 group relative">
       {children}
-    </button>
+    </div>
   );
 };
 

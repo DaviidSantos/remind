@@ -51,9 +51,9 @@ const File: FC<FileProps> = ({ path }) => {
   };
 
   const openNote = async function () {
-    if (!openNotes.some((note) => note.title === getNodeName(path))) {
+    if (!openNotes.some((note) => note.title === getPath(path))) {
       const note = {
-        title: getNodeName(path),
+        title: getPath(path),
         content: await readTextFile(getPath(path), {
           dir: BaseDirectory.Document,
         }),
@@ -62,7 +62,7 @@ const File: FC<FileProps> = ({ path }) => {
 
       const updatedNotes = [...openNotes, note];
       setOpenNotes(updatedNotes);
-      setActiveNote(note.title);
+      setActiveNote(getPath(path));
     }
   };
 

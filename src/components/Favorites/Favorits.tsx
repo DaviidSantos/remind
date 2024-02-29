@@ -8,9 +8,9 @@ const Favorits = () => {
     <section className="grow min-h-0 py-4">
       <div className="flex items-center gap-4 mb-7">
         <button onClick={() => setExplorerMode("FILE_TREE")}>
-          <AiOutlineLeft className="h-4 text-zinc-100" />
+          <AiOutlineLeft className="h-3 text-zinc-400" />
         </button>
-         <span className="text-zinc-200 text-sm">Favoritos</span>
+        <span className="text-zinc-400 text-xs">Favoritos</span>
       </div>
     </section>
   );

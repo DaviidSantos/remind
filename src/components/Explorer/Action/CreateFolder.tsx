@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFileTreeContext } from "../../../context/FileTreeContext";
-import { getPath } from "../../../lib/utils";
+import { extractFolderPath, getPath } from "../../../lib/utils";
 import { invoke } from "@tauri-apps/api";
 import { usePopoverContext } from "../../../context/PopoverContext";
 
@@ -12,7 +12,9 @@ const CreateFolder = () => {
   const createFolder = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let folderPath =
-      getPath(currentNode!).replace("\\", "/") + "/" + folderName;
+      getPath(extractFolderPath(currentNode!).replace("\\", "/")) +
+      "/" +
+      folderName;
 
     await invoke("create_folder", { path: folderPath });
     setIsOpen(false);

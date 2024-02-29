@@ -4,6 +4,7 @@ import { extractFolderPath, getPath } from "../../../lib/utils";
 import { invoke } from "@tauri-apps/api";
 import { usePopoverContext } from "../../../context/PopoverContext";
 import { useOpenNotesContext } from "../../../context/OpenNotesContext";
+import dayjs from "dayjs";
 
 const CreateNote = () => {
   const [noteName, setNoteName] = useState<string>("");
@@ -18,7 +19,13 @@ const CreateNote = () => {
       "/" +
       noteName;
 
-    await invoke("create_note", { notePath });
+    await invoke("create_note", {
+      notePath: notePath,
+      interval: 0,
+      repetition: 0,
+      efactor: 2.5,
+      dueDate: dayjs(Date.now()).toISOString().substring(0, 10),
+    });
 
     const note = {
       title: noteName + ".md",

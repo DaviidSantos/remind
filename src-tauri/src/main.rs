@@ -32,6 +32,11 @@ fn main() {
             get_note_tags,
             delete_tag,
             delete_note_tag,
+            get_tag_notes,
+            add_reference,
+            get_references,
+            delete_reference,
+            update_favorite,
         ])
         .setup(|_| {
             let _ = db::create_database();
@@ -126,12 +131,12 @@ fn update_note_path(path: &str, new_path: &str) {
 
 #[tauri::command]
 fn revisao(path: &str, interval: i32, repetition: i32, efactor: f32, due_date: &str) {
-    let _ = db::revisao(path, interval, repetition, efactor, due_date);
+    let _ = db::revision(path, interval, repetition, efactor, due_date);
 }
 
 #[tauri::command]
-fn update_note_card(path: &str, card_id: i32) {
-    let _ = db::update_note_card(path, card_id);
+fn update_note_card(note_id: i32, card_id: i32) {
+    let _ = db::update_note_card(note_id, card_id);
 }
 
 #[tauri::command]
@@ -166,4 +171,31 @@ fn delete_tag(id: i32) {
 #[tauri::command]
 fn delete_note_tag(note_id: i32, tag_id: i32) {
     let _ = db::delete_note_tag(note_id, tag_id);
+}
+
+#[tauri::command]
+fn get_tag_notes(id: i32) -> Vec<db::Note> {
+    let notes = db::get_tag_notes(id).unwrap();
+    notes
+}
+
+#[tauri::command]
+fn add_reference(note_id: i32, reference: &str) {
+    _ = db::add_reference(note_id, reference)
+}
+
+#[tauri::command]
+fn get_references(note_id: i32) -> Vec<db::Reference> {
+    let references = db::get_note_references(note_id).unwrap();
+    references
+}
+
+#[tauri::command]
+fn delete_reference(id: i32) {
+    _ = db::delete_reference(id)
+}
+
+#[tauri::command]
+fn update_favorite(id: i32, is_favorite: i32) {
+    _ = db::update_favorite(id, is_favorite)
 }

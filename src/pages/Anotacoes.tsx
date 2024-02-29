@@ -23,6 +23,7 @@ import NoteEditorContent from "../components/NoteEditor/NoteEditorContent";
 import { useExplorerContext } from "../context/ExplorerContext";
 import Favorits from "../components/Favorites/Favorits";
 import Tags from "../components/Tags/Tags";
+import { TagsContextProvider } from "../context/TagsContext";
 
 const Anotacoes = () => {
   const { explorerMode, setExplorerMode } = useExplorerContext();
@@ -35,68 +36,70 @@ const Anotacoes = () => {
 
   return (
     <div className="flex w-full">
-      <OpenNotesContextProvider>
-        <ExplorerContainer>
-          <FileTreeContextProvider>
-            <ExplorerOptions>
-              <Tooltip tooltip="Pesquisar anotações">
-                <ExplorerOption>
-                  <PiMagnifyingGlassLight className="h-4 text-zinc-200" />
-                </ExplorerOption>
-              </Tooltip>
+      <TagsContextProvider>
+        <OpenNotesContextProvider>
+          <ExplorerContainer>
+            <FileTreeContextProvider>
+              <ExplorerOptions>
+                <Tooltip tooltip="Pesquisar anotações">
+                  <ExplorerOption>
+                    <PiMagnifyingGlassLight className="h-4 text-zinc-200" />
+                  </ExplorerOption>
+                </Tooltip>
 
-              <Tooltip tooltip="Tags">
-                <ExplorerOption>
-                  <button onClick={() => setExplorerMode("TAGS")}>
-                    <PiTagSimple className="h-4 text-zinc-200" />
-                  </button>
-                </ExplorerOption>
-              </Tooltip>
+                <Tooltip tooltip="Tags">
+                  <ExplorerOption>
+                    <button onClick={() => setExplorerMode("TAGS")}>
+                      <PiTagSimple className="h-4 text-zinc-200" />
+                    </button>
+                  </ExplorerOption>
+                </Tooltip>
 
-              <Tooltip tooltip="Favoritos">
-                <ExplorerOption>
-                  <button onClick={() => setExplorerMode("FAVORITS")}>
-                    <PiBookmarkSimple className="h-4 text-zinc-200" />
-                  </button>
-                </ExplorerOption>
-              </Tooltip>
+                <Tooltip tooltip="Favoritos">
+                  <ExplorerOption>
+                    <button onClick={() => setExplorerMode("FAVORITS")}>
+                      <PiBookmarkSimple className="h-4 text-zinc-200" />
+                    </button>
+                  </ExplorerOption>
+                </Tooltip>
 
-              <Popover>
-                <PopoverTrigger>
-                  <Tooltip tooltip="Nova anotação">
-                    <ExplorerOption>
-                      <PiNotePencilLight className="h-4 text-zinc-200" />
-                    </ExplorerOption>
-                  </Tooltip>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <CreateNote />
-                </PopoverContent>
-              </Popover>
+                <Popover>
+                  <PopoverTrigger>
+                    <Tooltip tooltip="Nova anotação">
+                      <ExplorerOption>
+                        <PiNotePencilLight className="h-4 text-zinc-200" />
+                      </ExplorerOption>
+                    </Tooltip>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <CreateNote />
+                  </PopoverContent>
+                </Popover>
 
-              <Popover>
-                <PopoverTrigger>
-                  <Tooltip tooltip="Nova pasta">
-                    <ExplorerOption>
-                      <AiOutlineFolderAdd className="h-4 text-zinc-200" />
-                    </ExplorerOption>
-                  </Tooltip>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <CreateFolder />
-                </PopoverContent>
-              </Popover>
-            </ExplorerOptions>
+                <Popover>
+                  <PopoverTrigger>
+                    <Tooltip tooltip="Nova pasta">
+                      <ExplorerOption>
+                        <AiOutlineFolderAdd className="h-4 text-zinc-200" />
+                      </ExplorerOption>
+                    </Tooltip>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <CreateFolder />
+                  </PopoverContent>
+                </Popover>
+              </ExplorerOptions>
 
-            {currentView}
-          </FileTreeContextProvider>
-        </ExplorerContainer>
+              {currentView}
+            </FileTreeContextProvider>
+          </ExplorerContainer>
 
-        <NoteEditorContainer>
-          <NoteEditorTabs />
-          <NoteEditorContent />
-        </NoteEditorContainer>
-      </OpenNotesContextProvider>
+          <NoteEditorContainer>
+            <NoteEditorTabs />
+            <NoteEditorContent />
+          </NoteEditorContainer>
+        </OpenNotesContextProvider>
+      </TagsContextProvider>
     </div>
   );
 };

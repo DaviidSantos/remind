@@ -24,9 +24,9 @@ const FileTree = () => {
             .map((node) => (
               <>
                 {node.is_folder ? (
-                  <Folder {...node} />
+                  <Folder {...node} key={node.path} />
                 ) : (
-                  <File path={node.path} />
+                  <File path={node.path} key={node.path} />
                 )}
               </>
             ))}
