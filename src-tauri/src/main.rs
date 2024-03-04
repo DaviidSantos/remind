@@ -39,8 +39,8 @@ fn main() {
             update_favorite,
         ])
         .setup(|_| {
-            let _ = db::create_database();
             folders::create_remind_folder_if_not_exists();
+            let _ = db::create_database();
             Ok(())
         })
         .run(tauri::generate_context!())

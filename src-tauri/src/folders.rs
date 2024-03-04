@@ -15,6 +15,13 @@ pub(crate) fn create_remind_folder_if_not_exists() {
             eprintln!("Failed to create folder {:?}: {}", folder_path, err);
         }
     }
+
+    let db = documents_directory.join("remind").join("data.db");
+    if !db.exists() {
+        if let Err(err) = fs::write(&db, "") {
+            eprintln!("Failed to create file {:?}: {}", db, err);
+        }
+    }
 }
 
 pub(crate) fn create_new_folder(folder_path: &str) {
@@ -66,7 +73,10 @@ pub(crate) fn rename_folder(current_folder_name: &str, new_folder_name: &str) {
 
     if current_folder_path.exists() {
         if let Err(err) = fs::rename(&current_folder_path, &new_folder_path) {
-            eprintln!("Failed to rename folder {:?}: to {:?} {}", new_folder_path, new_folder_path, err)
+            eprintln!(
+                "Failed to rename folder {:?}: to {:?} {}",
+                new_folder_path, new_folder_path, err
+            )
         }
     }
 }
