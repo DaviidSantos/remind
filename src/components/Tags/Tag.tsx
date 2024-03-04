@@ -2,19 +2,18 @@ import { invoke } from "@tauri-apps/api";
 import { FC, useEffect, useState } from "react";
 import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
 import { IoCloseOutline } from "react-icons/io5";
-import { useTagsContext } from "../../context/TagsContext";
 import { Note } from "../../context/OpenNotesContext";
 import File from "../FileTree/File";
 
 interface TagProps {
   id: number;
   name: string;
+  readTags: () => Promise<void>;
 }
 
-const Tag: FC<TagProps> = ({ id, name }) => {
+const Tag: FC<TagProps> = ({ id, name, readTags }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notes, setNotes] = useState<Note[]>();
-  const { readTags } = useTagsContext();
 
   const deleteTag = async function () {
     await invoke("delete_tag", { id });

@@ -1,12 +1,14 @@
 import { invoke } from "@tauri-apps/api";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { usePopoverContext } from "../../../context/PopoverContext";
-import { useTagsContext } from "../../../context/TagsContext";
 
-const CreateTag = () => {
+interface CreateTagProps {
+  readTags: () => Promise<void>;
+}
+
+const CreateTag: FC<CreateTagProps> = ({ readTags }) => {
   const [tag, setTag] = useState<string>("");
   const { setIsOpen } = usePopoverContext();
-  const { readTags } = useTagsContext();
 
   const createTag = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

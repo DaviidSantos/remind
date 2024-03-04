@@ -6,12 +6,23 @@ import PopoverContent from "../Popover/PopoverContent";
 import PopoverTrigger from "../Popover/PopoverTrigger";
 import Tooltip from "../Tooltip";
 import CreateTag from "./Action/CreateTag";
-import { useTagsContext } from "../../context/TagsContext";
 import Tag from "./Tag";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api";
 
 const Tags = () => {
-  const { tags } = useTagsContext();
+  const [tags, setTags] = useState<ITag[]>();
   const { setExplorerMode } = useExplorerContext();
+
+  const readTags = async function () {
+    const data = await invoke<ITag[]>("select_all_tags");
+
+    setTags(data);
+  };
+
+  useEffect(() => {
+    readTags();
+  }, []);
 
   return (
     tags && (
@@ -31,18 +42,14 @@ const Tags = () => {
               </Tooltip>
             </PopoverTrigger>
             <PopoverContent>
-              <CreateTag />
+              <CreateTag readTags={readTags} />
             </PopoverContent>
           </Popover>
         </div>
 
         <div>
           {tags.map((tag) => (
-            <Tag
-              key={tag.id}
-              id={tag.id}
-              name={tag.name}
-            />
+            <Tag readTags={readTags} key={tag.id} id={tag.id} name={tag.name} />
           ))}
         </div>
       </section>

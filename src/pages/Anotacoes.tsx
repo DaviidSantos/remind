@@ -23,7 +23,6 @@ import NoteEditorContent from "../components/NoteEditor/NoteEditorContent";
 import { useExplorerContext } from "../context/ExplorerContext";
 import Favorits from "../components/Favorites/Favorits";
 import Tags from "../components/Tags/Tags";
-import { TagsContextProvider } from "../context/TagsContext";
 
 const Anotacoes = () => {
   const { explorerMode, setExplorerMode } = useExplorerContext();
@@ -36,7 +35,6 @@ const Anotacoes = () => {
 
   return (
     <div className="flex w-full">
-      <TagsContextProvider>
         <OpenNotesContextProvider>
           <ExplorerContainer>
             <FileTreeContextProvider>
@@ -99,7 +97,6 @@ const Anotacoes = () => {
             <NoteEditorContent />
           </NoteEditorContainer>
         </OpenNotesContextProvider>
-      </TagsContextProvider>
     </div>
   );
 };

@@ -19,3 +19,8 @@ interface IReference {
   note_id: number;
   reference: string;
 }
+
+interface ITag {
+  id: number;
+  name: string;
+}

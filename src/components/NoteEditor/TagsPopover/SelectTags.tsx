@@ -1,10 +1,9 @@
 import { Listbox, Transition } from "@headlessui/react";
-import { FC, Fragment } from "react";
-import { Tag, useTagsContext } from "../../../context/TagsContext";
+import { FC, Fragment, useEffect, useState } from "react";
 import { BsChevronExpand } from "react-icons/bs";
 import { invoke } from "@tauri-apps/api";
 
-const title: Tag = {
+const title: ITag = {
   id: 0,
   name: "Adicionar uma tag",
 };
@@ -14,9 +13,19 @@ interface SelectTagsProps {
 }
 
 const SelectTags: FC<SelectTagsProps> = ({ noteId }) => {
-  const { tags, readTags } = useTagsContext();
+  const [tags, setTags] = useState<ITag[]>();
 
-  const addTag = async function (tag: Tag) {
+  const readTags = async function () {
+    const data = await invoke<ITag[]>("select_all_tags");
+
+    setTags(data);
+  };
+
+  useEffect(() => {
+    readTags();
+  }, []);
+
+  const addTag = async function (tag: ITag) {
     await invoke("add_note_tag", { noteId, tagId: tag.id });
     readTags();
   };
