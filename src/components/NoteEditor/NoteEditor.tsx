@@ -67,7 +67,9 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
   };
 
   const saveNote = async () => {
+    console.log(note.path)
     const path = getPath(note.path);
+    console.log(path)
     await writeTextFile(
       { path, contents: note.content },
       { dir: BaseDirectory.Document }

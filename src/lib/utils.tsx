@@ -27,7 +27,7 @@ export const getPath = (path: string) => {
   if (index !== -1) {
     return path.substring(index + remindSubstring.length);
   } else {
-    return "";
+    return path;
   }
 };
 

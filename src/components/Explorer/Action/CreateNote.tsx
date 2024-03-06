@@ -15,8 +15,8 @@ const CreateNote = () => {
   const createNote = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let notePath =
-      extractFolderPath(getPath(currentNode!)).replace("\\", "/") +
-      "/" +
+      extractFolderPath(getPath(currentNode!)).replace("/", "\\") +
+      "\\" +
       noteName;
 
     await invoke("create_note", {
@@ -30,7 +30,7 @@ const CreateNote = () => {
     const note = {
       title: noteName + ".md",
       content: "",
-      path: notePath,
+      path: notePath + ".md",
     };
 
     const updatedNotes = [...openNotes, note];
