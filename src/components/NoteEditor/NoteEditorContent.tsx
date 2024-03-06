@@ -28,8 +28,10 @@ const NoteEditorContent = () => {
 
   const selectNote = async function () {
     const data = await invoke<INote>("select_note", {
-      path: activeNote.replace("\\", "/").replace(".md", ""),
+      path: activeNote.replace(".md", ""),
     });
+
+    console.log(data)
 
     if (data.card_id) {
       const card = await invoke<ICard>("select_card", { id: data.card_id });
@@ -53,6 +55,7 @@ const NoteEditorContent = () => {
   };
 
   const changeCard = async (card: ICard) => {
+    console.log(activeNote)
     await invoke("update_note_card", { noteId, cardId: card.id });
     setCurrentCard(card);
   };
