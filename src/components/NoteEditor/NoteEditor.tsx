@@ -67,9 +67,9 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
   };
 
   const saveNote = async () => {
-    console.log(note.path)
+    console.log(note.path);
     const path = getPath(note.path);
-    console.log(path)
+    console.log(path);
     await writeTextFile(
       { path, contents: note.content },
       { dir: BaseDirectory.Document }
@@ -82,9 +82,16 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
   };
 
   const getReferences = async () => {
+    console.log("aqui");
+    console.log(note);
     const data = await invoke<INote>("select_note", {
-      path: activeNote.replace("\\", "/").replace(".md", ""),
+      path: activeNote.replace(".md", ""),
     });
+
+    console.log("active");
+    console.log(activeNote.replace(".md", ""));
+    console.log("agora aqui");
+    console.log(data);
 
     const references = await invoke<IReference[]>("get_references", {
       noteId: data.id,
@@ -106,7 +113,10 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
   const addReference = async function (e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    await invoke("add_reference", { noteId, reference });
+    console.log(noteId);
+    await invoke("add_reference", { noteId, reference }).catch((e) =>
+      console.log("tete")
+    );
 
     const references = await invoke<IReference[]>("get_references", {
       noteId: noteId,
@@ -114,6 +124,7 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
 
     setReferences(references);
     setReference("");
+    console.log("work");
     setIsAddReferenceOpen(false);
   };
 
