@@ -558,3 +558,33 @@ pub fn update_favorite(id: i32, is_favorite: i32) -> Result<()> {
 
     Ok(())
 }
+
+pub fn get_favorites() -> Result<Vec<Note>> {
+    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
+    let db = documents_directory
+        .join("remind/data.db")
+        .into_os_string()
+        .into_string()
+        .unwrap();
+    let conn = Connection::open(db)?;
+
+    let mut statement = conn.prepare("SELECT * FROM notes WHERE is_favorite = 1")?;
+    let mut rows = statement.query([])?;
+    let mut items: Vec<Note> = Vec::new();
+    while let Some(row) = rows.next()? {
+        let note: Note = Note {
+            id: row.get(0)?,
+            path: row.get(1)?,
+            due_date: row.get(2)?,
+            interval: row.get(3)?,
+            repetition: row.get(4)?,
+            efactor: row.get(5)?,
+            is_favorite: row.get(6)?,
+            card_id: row.get(7)?,
+        };
+
+        items.push(note);
+    }
+
+    Ok(items)
+}

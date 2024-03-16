@@ -37,6 +37,7 @@ fn main() {
             get_references,
             delete_reference,
             update_favorite,
+            get_favorites
         ])
         .setup(|_| {
             folders::create_remind_folder_if_not_exists();
@@ -198,4 +199,10 @@ fn delete_reference(id: i32) {
 #[tauri::command]
 fn update_favorite(id: i32, is_favorite: i32) {
     _ = db::update_favorite(id, is_favorite)
+}
+
+#[tauri::command]
+fn get_favorites() -> Vec<db::Note> {
+    let notes = db::get_favorites().unwrap();
+    notes
 }

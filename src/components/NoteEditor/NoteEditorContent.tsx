@@ -31,7 +31,7 @@ const NoteEditorContent = () => {
       path: activeNote.replace(".md", ""),
     });
 
-    console.log(data)
+    console.log(data);
 
     if (data.card_id) {
       const card = await invoke<ICard>("select_card", { id: data.card_id });
@@ -55,13 +55,15 @@ const NoteEditorContent = () => {
   };
 
   const changeCard = async (card: ICard) => {
-    console.log(activeNote)
+    console.log(activeNote);
     await invoke("update_note_card", { noteId, cardId: card.id });
     setCurrentCard(card);
   };
 
   const updateFavorite = async () => {
-    const favorite = isFavorite === true ? 1 : 0;
+    const favorite = isFavorite === true ? 0 : 1;
+    console.log("arara");
+    console.log(noteId);
 
     setIsFavorite(!isFavorite);
     await invoke("update_favorite", { id: noteId, isFavorite: favorite });
@@ -133,7 +135,7 @@ const NoteEditorContent = () => {
       {openNotes.map(
         (note) =>
           note.title === activeNote && (
-            <NoteEditor note={note} key={`${note.title}${noteId}`}/>
+            <NoteEditor note={note} key={`${note.title}${noteId}`} />
           )
       )}
     </div>
