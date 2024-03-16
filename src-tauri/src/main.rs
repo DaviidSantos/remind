@@ -18,8 +18,6 @@ fn main() {
             delete_note_db,
             rename_note,
             add_card,
-            add_tag,
-            add_note_tag,
             select_all_notes,
             select_note,
             select_card,
@@ -29,9 +27,7 @@ fn main() {
             select_all_cards,
             select_all_tags,
             get_card_notes,
-            get_note_tags,
-            delete_tag,
-            delete_note_tag,
+            update_tag,
             get_tag_notes,
             add_reference,
             get_references,
@@ -98,16 +94,6 @@ fn add_card(name: &str) {
 }
 
 #[tauri::command]
-fn add_tag(name: &str) {
-    let _ = db::insert_tag(name);
-}
-
-#[tauri::command]
-fn add_note_tag(note_id: i32, tag_id: i32) {
-    let _ = db::add_note_tag(note_id, tag_id);
-}
-
-#[tauri::command]
 fn select_all_notes() -> Vec<db::Note> {
     let notes = db::get_all_notes().unwrap();
     notes
@@ -159,24 +145,13 @@ fn get_card_notes(card_id: i32) -> Vec<db::Note> {
 }
 
 #[tauri::command]
-fn get_note_tags(id: i32) -> Vec<db::Tag> {
-    let tags = db::get_note_tags(id).unwrap();
-    tags
+fn update_tag(note_id: i32, tag: &str) {
+    let _ = db::update_tag(note_id, tag);
 }
 
 #[tauri::command]
-fn delete_tag(id: i32) {
-    let _ = db::delete_tag(id);
-}
-
-#[tauri::command]
-fn delete_note_tag(note_id: i32, tag_id: i32) {
-    let _ = db::delete_note_tag(note_id, tag_id);
-}
-
-#[tauri::command]
-fn get_tag_notes(id: i32) -> Vec<db::Note> {
-    let notes = db::get_tag_notes(id).unwrap();
+fn get_tag_notes(tag: &str) -> Vec<db::Note> {
+    let notes = db::get_tag_notes(tag).unwrap();
     notes
 }
 

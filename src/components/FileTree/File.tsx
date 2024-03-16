@@ -91,7 +91,7 @@ const File: FC<FileProps> = ({ path }) => {
             <span className="text-xs text-zinc-200">Apagar anotação</span>
           </ContextMenuItem>
           <ContextMenuItem action={async () => setIsRename(true)}>
-            <PiPencilLight className="text-zinc-200" />
+            <PiPencilLight className="text-zinc-400" />
             <span className="text-xs text-zinc-200">Renomear anotação</span>
           </ContextMenuItem>
         </ContextMenuContent>

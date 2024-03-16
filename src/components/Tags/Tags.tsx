@@ -34,22 +34,11 @@ const Tags = () => {
             </button>
             <h4 className="text-xs font-semibold text-zinc-400">Tags</h4>
           </div>
-
-          <Popover>
-            <PopoverTrigger>
-              <Tooltip tooltip="Nova anotação">
-                <HiOutlinePlus className="h-4 text-zinc-200" />
-              </Tooltip>
-            </PopoverTrigger>
-            <PopoverContent>
-              <CreateTag readTags={readTags} />
-            </PopoverContent>
-          </Popover>
         </div>
 
         <div>
           {tags.map((tag) => (
-            <Tag readTags={readTags} key={tag.id} id={tag.id} name={tag.name} />
+            <Tag key={tag.name} name={tag.name} />
           ))}
         </div>
       </section>

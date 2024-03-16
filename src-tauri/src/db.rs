@@ -6,6 +6,7 @@ use serde::Serialize;
 pub struct Note {
     id: i32,
     path: String,
+    tag: String,
     due_date: String,
     interval: i32,
     repetition: i32,
@@ -22,7 +23,6 @@ pub struct Card {
 
 #[derive(Serialize)]
 pub struct Tag {
-    id: i32,
     name: String,
 }
 
@@ -45,9 +45,7 @@ pub fn create_database() -> Result<()> {
     // Define your SQL statements
     let sql_statements = [
         "CREATE TABLE IF NOT EXISTS cards(id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE)",
-        "CREATE TABLE IF NOT EXISTS tags(id INTEGER PRIMARY KEY, name TEXT)",
-        "CREATE TABLE IF NOT EXISTS notes(id INTEGER PRIMARY KEY, path TEXT, due_date INTEGER, interval INTEGER, repetition INTEGER, efactor INTEGER, is_favorite INTEGER, card_id INTEGER REFERENCES cards(id))",
-        "CREATE TABLE IF NOT EXISTS note_tags(id INTEGER PRIMARY KEY, note_id INTEGER NOT NULL REFERENCES notes(id), tag_id INTEGER NOT NULL REFERENCES tags(id))",
+        "CREATE TABLE IF NOT EXISTS notes(id INTEGER PRIMARY KEY, path TEXT, tag TEXT, due_date INTEGER, interval INTEGER, repetition INTEGER, efactor INTEGER, is_favorite INTEGER, card_id INTEGER REFERENCES cards(id))",
         "CREATE TABLE IF NOT EXISTS note_references(id INTEGER PRIMARY KEY, note_id INTEGER NOT NULL REFERENCES notes(id), reference TEXT)",
     ];
 
@@ -78,7 +76,7 @@ pub fn insert_note(
         .into_string()
         .unwrap();
     let conn = Connection::open(db)?;
-    let mut statement = conn.prepare("INSERT INTO notes (path, interval, repetition, efactor, due_date, is_favorite) VALUES (@path, @interval, @repetition, @efactor, @due_date, @is_favorite)")?;
+    let mut statement = conn.prepare("INSERT INTO notes (path, tag, interval, repetition, efactor, due_date, is_favorite) VALUES (@path, '', @interval, @repetition, @efactor, @due_date, @is_favorite)")?;
     statement.execute(named_params! { "@path": path, "@interval": interval, "@repetition": repetition, "@efactor": efactor, "@due_date": due_date, "@is_favorite": 0})?;
 
     Ok(())
@@ -100,12 +98,13 @@ pub fn get_all_notes() -> Result<Vec<Note>> {
         let note: Note = Note {
             id: row.get(0)?,
             path: row.get(1)?,
-            due_date: row.get(2)?,
-            interval: row.get(3)?,
-            repetition: row.get(4)?,
-            efactor: row.get(5)?,
-            is_favorite: row.get(6)?,
-            card_id: row.get(7)?,
+            tag: row.get(2)?,
+            due_date: row.get(3)?,
+            interval: row.get(4)?,
+            repetition: row.get(5)?,
+            efactor: row.get(6)?,
+            is_favorite: row.get(7)?,
+            card_id: row.get(8)?,
         };
 
         items.push(note);
@@ -114,7 +113,7 @@ pub fn get_all_notes() -> Result<Vec<Note>> {
     Ok(items)
 }
 
-pub fn get_tag_notes(id: i32) -> Result<Vec<Note>> {
+pub fn get_tag_notes(tag: &str) -> Result<Vec<Note>> {
     let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
     let db = documents_directory
         .join("remind/data.db")
@@ -123,26 +122,20 @@ pub fn get_tag_notes(id: i32) -> Result<Vec<Note>> {
         .unwrap();
     let conn = Connection::open(db)?;
 
-    let mut statement = conn.prepare(
-        "SELECT n.id, n.path, n.due_date, n.interval, n.repetition, n.efactor, n.card_id
-    FROM notes n
-    JOIN note_tags nt ON n.id = nt.note_id
-    JOIN tags t ON nt.tag_id = t.id
-    WHERE t.id = ?;
-    ",
-    )?;
-    let mut rows = statement.query(&[&id])?;
+    let mut statement = conn.prepare("SELECT * FROM notes WHERE tag = ?")?;
+    let mut rows = statement.query(&[&tag])?;
     let mut items: Vec<Note> = Vec::new();
     while let Some(row) = rows.next()? {
         let note: Note = Note {
             id: row.get(0)?,
             path: row.get(1)?,
-            due_date: row.get(2)?,
-            interval: row.get(3)?,
-            repetition: row.get(4)?,
-            efactor: row.get(5)?,
-            is_favorite: row.get(6)?,
-            card_id: row.get(7)?,
+            tag: row.get(2)?,
+            due_date: row.get(3)?,
+            interval: row.get(4)?,
+            repetition: row.get(5)?,
+            efactor: row.get(6)?,
+            is_favorite: row.get(7)?,
+            card_id: row.get(8)?,
         };
 
         items.push(note);
@@ -166,6 +159,7 @@ pub fn select_note(path: &str) -> Result<Note> {
         Note {
             id: 0,
             path: "".to_string(),
+            tag: "".to_string(),
             due_date: "".to_string(),
             interval: 0,
             repetition: 0,
@@ -178,12 +172,13 @@ pub fn select_note(path: &str) -> Result<Note> {
     while let Some(row) = rows.next()? {
         note.id = row.get(0)?;
         note.path = row.get(1)?;
-        note.due_date = row.get(2)?;
-        note.interval = row.get(3)?;
-        note.repetition = row.get(4)?;
-        note.efactor = row.get(5)?;
-        note.is_favorite = row.get(6)?;
-        note.card_id = row.get(7)?;
+        note.tag = row.get(2)?;
+        note.due_date = row.get(3)?;
+        note.interval = row.get(4)?;
+        note.repetition = row.get(5)?;
+        note.efactor = row.get(6)?;
+        note.is_favorite = row.get(7)?;
+        note.card_id = row.get(8)?;
     }
 
     Ok(note)
@@ -298,7 +293,7 @@ pub fn get_all_tags() -> Result<Vec<Tag>> {
 
     let mut statement = conn.prepare(
         "
-        SELECT * FROM tags
+        SELECT DISTINCT tag FROM notes;
     ",
     )?;
 
@@ -306,34 +301,7 @@ pub fn get_all_tags() -> Result<Vec<Tag>> {
     let mut items: Vec<Tag> = Vec::new();
 
     while let Some(row) = rows.next()? {
-        let tag: Tag = Tag {
-            id: row.get(0)?,
-            name: row.get(1)?,
-        };
-
-        items.push(tag);
-    }
-
-    Ok(items)
-}
-
-pub fn get_note_tags(id: i32) -> Result<Vec<Tag>> {
-    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
-    let db = documents_directory
-        .join("remind/data.db")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    let conn = Connection::open(db)?;
-
-    let mut statement = conn.prepare("SELECT tags.id, tags.name FROM tags JOIN note_tags ON tags.id = note_tags.tag_id WHERE note_tags.note_id = ?;")?;
-    let mut rows = statement.query(&[&id])?;
-    let mut items: Vec<Tag> = Vec::new();
-    while let Some(row) = rows.next()? {
-        let tag: Tag = Tag {
-            id: row.get(0)?,
-            name: row.get(1)?,
-        };
+        let tag: Tag = Tag { name: row.get(0)? };
 
         items.push(tag);
     }
@@ -358,12 +326,13 @@ pub fn get_card_notes(card_id: i32) -> Result<Vec<Note>> {
         let note: Note = Note {
             id: row.get(0)?,
             path: row.get(1)?,
-            due_date: row.get(2)?,
-            interval: row.get(3)?,
-            repetition: row.get(4)?,
-            efactor: row.get(5)?,
-            is_favorite: row.get(6)?,
-            card_id: row.get(7)?,
+            tag: row.get(2)?,
+            due_date: row.get(3)?,
+            interval: row.get(4)?,
+            repetition: row.get(5)?,
+            efactor: row.get(6)?,
+            is_favorite: row.get(7)?,
+            card_id: row.get(8)?,
         };
 
         items.push(note);
@@ -386,7 +355,7 @@ pub fn insert_card(name: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn insert_tag(name: &str) -> Result<()> {
+pub fn update_tag(note_id: i32, tag: &str) -> Result<()> {
     let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
     let db = documents_directory
         .join("remind/data.db")
@@ -394,71 +363,8 @@ pub fn insert_tag(name: &str) -> Result<()> {
         .into_string()
         .unwrap();
     let conn = Connection::open(db)?;
-    let mut statement = conn.prepare("INSERT INTO tags (name) VALUES (@name)")?;
-    statement.execute(named_params! { "@name": name})?;
-
-    Ok(())
-}
-
-fn check_note_tag_existence(note_id: i32, tag_id: i32) -> Result<bool> {
-    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
-    let db = documents_directory
-        .join("remind/data.db")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    let conn = Connection::open(db)?;
-
-    let mut stmt = conn.prepare("SELECT 1 FROM note_tags WHERE note_id = ?1 AND tag_id = ?2")?;
-    let exists = stmt.exists(&[&note_id, &tag_id])?;
-    Ok(exists)
-}
-
-pub fn add_note_tag(note_id: i32, tag_id: i32) -> Result<()> {
-    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
-    let db = documents_directory
-        .join("remind/data.db")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    let conn = Connection::open(db)?;
-
-    if !check_note_tag_existence(note_id, tag_id)? {
-        let mut statement =
-            conn.prepare("INSERT INTO note_tags (note_id, tag_id) VALUES (@note_id, @tag_id)")?;
-        statement.execute(named_params! { "@note_id": note_id, "@tag_id": tag_id})?;
-    }
-    Ok(())
-}
-
-pub fn delete_tag(id: i32) -> Result<()> {
-    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
-    let db = documents_directory
-        .join("remind/data.db")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    let conn = Connection::open(db)?;
-    let mut statement = conn.prepare("DELETE FROM note_tags WHERE tag_id = @id;")?;
-    statement.execute(named_params! { "@id": id})?;
-
-    let mut statement = conn.prepare("DELETE FROM tags WHERE id = @id;")?;
-    statement.execute(named_params! { "@id": id})?;
-
-    Ok(())
-}
-
-pub fn delete_note_tag(note_id: i32, tag_id: i32) -> Result<()> {
-    let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
-    let db = documents_directory
-        .join("remind/data.db")
-        .into_os_string()
-        .into_string()
-        .unwrap();
-    let conn = Connection::open(db)?;
-    let mut statement =
-        conn.prepare("DELETE FROM note_tags WHERE tag_id = @tag_id AND note_id = @note_id;")?;
-    statement.execute(named_params! { "@note_id": note_id, "@tag_id": tag_id})?;
+    let mut statement = conn.prepare("UPDATE notes SET tag = @tag WHERE id = @note_id")?;
+    statement.execute(named_params! { "@tag": tag, "@note_id": note_id})?;
 
     Ok(())
 }
@@ -471,8 +377,6 @@ pub fn delete_note(id: i32) -> Result<()> {
         .into_string()
         .unwrap();
     let conn = Connection::open(db)?;
-    let mut statement = conn.prepare("DELETE FROM note_tags WHERE note_id = @id;")?;
-    statement.execute(named_params! { "@id": id})?;
 
     let mut statement = conn.prepare("DELETE FROM note_references WHERE note_id = @id;")?;
     statement.execute(named_params! { "@id": id})?;
@@ -575,12 +479,13 @@ pub fn get_favorites() -> Result<Vec<Note>> {
         let note: Note = Note {
             id: row.get(0)?,
             path: row.get(1)?,
-            due_date: row.get(2)?,
-            interval: row.get(3)?,
-            repetition: row.get(4)?,
-            efactor: row.get(5)?,
-            is_favorite: row.get(6)?,
-            card_id: row.get(7)?,
+            tag: row.get(2)?,
+            due_date: row.get(3)?,
+            interval: row.get(4)?,
+            repetition: row.get(5)?,
+            efactor: row.get(6)?,
+            is_favorite: row.get(7)?,
+            card_id: row.get(8)?,
         };
 
         items.push(note);

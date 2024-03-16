@@ -11,7 +11,7 @@ import NoteEditor from "./NoteEditor";
 import Popover from "../Popover/Popover";
 import PopoverTrigger from "../Popover/PopoverTrigger";
 import PopoverContent from "../Popover/PopoverContent";
-import SelectTags from "./TagsPopover/SelectTags";
+import AddTag from "./TagsPopover/AddTag";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
 import { getNodeName } from "../../lib/utils";
@@ -19,7 +19,7 @@ import SelectCards from "../SelectCard/SelectCard";
 
 const NoteEditorContent = () => {
   const { openNotes, activeNote } = useOpenNotesContext();
-  const [noteId, setNoteId] = useState<number | undefined>();
+  const [note, setNote] = useState<INote | undefined>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [cards, setCards] = useState<ICard[]>([
     { id: 0, name: "Selecionar coleção..." },
@@ -46,7 +46,7 @@ const NoteEditorContent = () => {
       setIsFavorite(false);
     }
 
-    setNoteId(data.id);
+    setNote(data);
   };
 
   const loadCards = async () => {
@@ -56,17 +56,15 @@ const NoteEditorContent = () => {
 
   const changeCard = async (card: ICard) => {
     console.log(activeNote);
-    await invoke("update_note_card", { noteId, cardId: card.id });
+    await invoke("update_note_card", { noteId: note?.id, cardId: card.id });
     setCurrentCard(card);
   };
 
   const updateFavorite = async () => {
     const favorite = isFavorite === true ? 0 : 1;
-    console.log("arara");
-    console.log(noteId);
 
     setIsFavorite(!isFavorite);
-    await invoke("update_favorite", { id: noteId, isFavorite: favorite });
+    await invoke("update_favorite", { id: note?.id, isFavorite: favorite });
   };
 
   useEffect(() => {
@@ -93,7 +91,7 @@ const NoteEditorContent = () => {
                 Tags
               </span>
               <PopoverContent classNames="top-6">
-                <SelectTags noteId={noteId} />
+                {note && <AddTag note={note} selectNote={selectNote}/>}
               </PopoverContent>
             </NoteEditorOption>
           </PopoverTrigger>
@@ -133,9 +131,9 @@ const NoteEditorContent = () => {
       </NoteEditorOptions>
 
       {openNotes.map(
-        (note) =>
-          note.title === activeNote && (
-            <NoteEditor note={note} key={`${note.title}${noteId}`} />
+        (openNote) =>
+          openNote.title === activeNote && (
+            <NoteEditor note={openNote} key={`${openNote.title}${note?.id}`} />
           )
       )}
     </div>

@@ -1,6 +1,7 @@
 interface INote {
   id: number;
   path: string;
+  tag: string;
   due_date: string;
   interval: number;
   repetition: number;
@@ -21,6 +22,5 @@ interface IReference {
 }
 
 interface ITag {
-  id: number;
   name: string;
 }
