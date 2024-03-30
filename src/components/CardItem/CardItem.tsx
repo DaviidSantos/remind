@@ -13,7 +13,9 @@ const CardItem: FC<CardItemProps> = ({ card }) => {
     noteItems.filter((note) => note.repetition === 0).length;
 
   const loadNotes = async () => {
+    console.log(card.id)
     const notes = await invoke<INote[]>("get_card_notes", { cardId: card.id });
+    console.log(notes)
     setNoteItems(notes);
   };
 

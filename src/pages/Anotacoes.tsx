@@ -1,7 +1,6 @@
 import { AiOutlineFolderAdd } from "react-icons/ai";
 import {
   PiBookmarkSimple,
-  PiMagnifyingGlassLight,
   PiNotePencilLight,
   PiTagSimple,
 } from "react-icons/pi";
@@ -35,68 +34,62 @@ const Anotacoes = () => {
 
   return (
     <div className="flex w-full">
-        <OpenNotesContextProvider>
-          <ExplorerContainer>
-            <FileTreeContextProvider>
-              <ExplorerOptions>
-                <Tooltip tooltip="Pesquisar anotações">
-                  <ExplorerOption>
-                    <PiMagnifyingGlassLight className="h-4 text-zinc-200" />
-                  </ExplorerOption>
-                </Tooltip>
+      <OpenNotesContextProvider>
+        <ExplorerContainer>
+          <FileTreeContextProvider>
+            <ExplorerOptions>
+              <Tooltip tooltip="Tags">
+                <ExplorerOption>
+                  <button onClick={() => setExplorerMode("TAGS")}>
+                    <PiTagSimple className="h-4 text-zinc-200" />
+                  </button>
+                </ExplorerOption>
+              </Tooltip>
 
-                <Tooltip tooltip="Tags">
-                  <ExplorerOption>
-                    <button onClick={() => setExplorerMode("TAGS")}>
-                      <PiTagSimple className="h-4 text-zinc-200" />
-                    </button>
-                  </ExplorerOption>
-                </Tooltip>
+              <Tooltip tooltip="Favoritos">
+                <ExplorerOption>
+                  <button onClick={() => setExplorerMode("FAVORITS")}>
+                    <PiBookmarkSimple className="h-4 text-zinc-200" />
+                  </button>
+                </ExplorerOption>
+              </Tooltip>
 
-                <Tooltip tooltip="Favoritos">
-                  <ExplorerOption>
-                    <button onClick={() => setExplorerMode("FAVORITS")}>
-                      <PiBookmarkSimple className="h-4 text-zinc-200" />
-                    </button>
-                  </ExplorerOption>
-                </Tooltip>
+              <Popover>
+                <PopoverTrigger>
+                  <Tooltip tooltip="Nova anotação">
+                    <ExplorerOption>
+                      <PiNotePencilLight className="h-4 text-zinc-200" />
+                    </ExplorerOption>
+                  </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <CreateNote />
+                </PopoverContent>
+              </Popover>
 
-                <Popover>
-                  <PopoverTrigger>
-                    <Tooltip tooltip="Nova anotação">
-                      <ExplorerOption>
-                        <PiNotePencilLight className="h-4 text-zinc-200" />
-                      </ExplorerOption>
-                    </Tooltip>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <CreateNote />
-                  </PopoverContent>
-                </Popover>
+              <Popover>
+                <PopoverTrigger>
+                  <Tooltip tooltip="Nova pasta">
+                    <ExplorerOption>
+                      <AiOutlineFolderAdd className="h-4 text-zinc-200" />
+                    </ExplorerOption>
+                  </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <CreateFolder />
+                </PopoverContent>
+              </Popover>
+            </ExplorerOptions>
 
-                <Popover>
-                  <PopoverTrigger>
-                    <Tooltip tooltip="Nova pasta">
-                      <ExplorerOption>
-                        <AiOutlineFolderAdd className="h-4 text-zinc-200" />
-                      </ExplorerOption>
-                    </Tooltip>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <CreateFolder />
-                  </PopoverContent>
-                </Popover>
-              </ExplorerOptions>
+            {currentView}
+          </FileTreeContextProvider>
+        </ExplorerContainer>
 
-              {currentView}
-            </FileTreeContextProvider>
-          </ExplorerContainer>
-
-          <NoteEditorContainer>
-            <NoteEditorTabs />
-            <NoteEditorContent />
-          </NoteEditorContainer>
-        </OpenNotesContextProvider>
+        <NoteEditorContainer>
+          <NoteEditorTabs />
+          <NoteEditorContent />
+        </NoteEditorContainer>
+      </OpenNotesContextProvider>
     </div>
   );
 };

@@ -24,8 +24,9 @@ const File: FC<FileProps> = ({ path }) => {
 
   const deleteNote = async function () {
     const notePath = getPath(path!).replace("\\", "/");
+    console.log(notePath)
 
-    await invoke("delete_note", { path: notePath });
+    await invoke("delete_note", { path: notePath.replace(".md", "") });
 
     if (openNotes.some((note) => note.title === getNodeName(path))) {
       let index = 0;

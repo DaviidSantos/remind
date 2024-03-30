@@ -133,7 +133,7 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
       <EditorContent
         onKeyDown={closeNote}
         editor={editor}
-        className="max-w-[calc(100vw-370px)] prose prose-invert m-h-[calc(100vh-209px)] m-0 prose-headings:m-3 prose-p:m- prose-h1:text-3xl mx-auto"
+        className="max-w-[calc(100vw-370px)] prose prose-invert m-h-[calc(100vh-209px)] m-0 prose-headings:my-3 prose-p:m- prose-h1:text-3xl mx-auto"
       />
 
       <div className="border-t border-t-zinc-700 pt-6 max-w-[calc(100vw-370px)] mx-auto">

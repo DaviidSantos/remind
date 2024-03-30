@@ -2,7 +2,7 @@ use rusqlite::{named_params, Connection, Result};
 
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct Note {
     id: i32,
     path: String,
@@ -319,7 +319,7 @@ pub fn get_card_notes(card_id: i32) -> Result<Vec<Note>> {
     let conn = Connection::open(db)?;
 
     let mut statement =
-        conn.prepare("SELECT * FROM notes WHERE card_id = ? AND due_date = Date('now');")?;
+        conn.prepare("SELECT * FROM notes WHERE card_id = ? AND due_date = DATE('now');")?;
     let mut rows = statement.query(&[&card_id])?;
     let mut items: Vec<Note> = Vec::new();
     while let Some(row) = rows.next()? {
@@ -369,7 +369,7 @@ pub fn update_tag(note_id: i32, tag: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn delete_note(id: i32) -> Result<()> {
+pub fn delete_note(path: &str) -> Result<()> {
     let documents_directory = tauri::api::path::document_dir().unwrap_or_default();
     let db = documents_directory
         .join("remind/data.db")
@@ -378,11 +378,13 @@ pub fn delete_note(id: i32) -> Result<()> {
         .unwrap();
     let conn = Connection::open(db)?;
 
-    let mut statement = conn.prepare("DELETE FROM note_references WHERE note_id = @id;")?;
-    statement.execute(named_params! { "@id": id})?;
+    let mut statement = conn.prepare(
+        "DELETE FROM note_references WHERE note_id = (SELECT id FROM notes WHERE path = @path');",
+    )?;
+    statement.execute(named_params! { "@path": path})?;
 
-    let mut statement = conn.prepare("DELETE FROM notes WHERE id = @id;")?;
-    statement.execute(named_params! { "@id": id})?;
+    let mut statement = conn.prepare("DELETE FROM notes WHERE path = @path;")?;
+    statement.execute(named_params! { "@path": path})?;
 
     Ok(())
 }

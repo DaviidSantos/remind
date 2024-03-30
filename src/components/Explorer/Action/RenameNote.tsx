@@ -51,6 +51,11 @@ const RenameNote: FC<RenameNoteProps> = ({ path, setIsRename }) => {
       newPath: newNotePath,
     });
 
+    await invoke("update_note_path", {
+      path: oldNotePath.replace("/", "\\").replace(".md", ""),
+      newPath: newNotePath.replace("/", "\\").replace(".md", ""),
+    });
+
     readFileTree();
     setIsRename(false);
   };

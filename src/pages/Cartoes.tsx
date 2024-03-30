@@ -15,6 +15,7 @@ const Cartoes = () => {
 
   const loadCards = async () => {
     const cards: ICard[] = await invoke<ICard[]>("select_all_cards");
+    console.log(cards)
     setCards(cards);
   };
 

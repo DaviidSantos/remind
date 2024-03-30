@@ -79,8 +79,8 @@ fn delete_note(path: &str) {
 }
 
 #[tauri::command]
-fn delete_note_db(id: i32) {
-    let _ = db::delete_note(id);
+fn delete_note_db(path: &str) {
+    let _ = db::delete_note(path);
 }
 
 #[tauri::command]
@@ -141,6 +141,7 @@ fn select_all_tags() -> Vec<db::Tag> {
 #[tauri::command]
 fn get_card_notes(card_id: i32) -> Vec<db::Note> {
     let notes = db::get_card_notes(card_id).unwrap();
+    println!("aa {:?}", notes);
     notes
 }
 
