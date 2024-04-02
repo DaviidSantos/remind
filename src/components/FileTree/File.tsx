@@ -23,10 +23,13 @@ const File: FC<FileProps> = ({ path }) => {
     useOpenNotesContext();
 
   const deleteNote = async function () {
-    const notePath = getPath(path!).replace("\\", "/");
-    console.log(notePath)
+    const notePath = getPath(path!);
+    console.log(notePath.replace(".md", ""));
 
-    await invoke("delete_note", { path: notePath.replace(".md", "") });
+    await invoke("delete_note", { path: notePath });
+    readFileTree();
+
+    await invoke("delete_note_db", { path: notePath.replace(".md", "") });
 
     if (openNotes.some((note) => note.title === getNodeName(path))) {
       let index = 0;
@@ -47,8 +50,6 @@ const File: FC<FileProps> = ({ path }) => {
         setActiveNote(updatedOpenNotes[index].title);
       }
     }
-
-    readFileTree();
   };
 
   const openNote = async function () {

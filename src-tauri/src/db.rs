@@ -379,11 +379,13 @@ pub fn delete_note(path: &str) -> Result<()> {
     let conn = Connection::open(db)?;
 
     let mut statement = conn.prepare(
-        "DELETE FROM note_references WHERE note_id = (SELECT id FROM notes WHERE path = @path');",
+        "DELETE FROM note_references WHERE note_id = (SELECT id FROM notes WHERE path = @path)",
     )?;
+
     statement.execute(named_params! { "@path": path})?;
 
     let mut statement = conn.prepare("DELETE FROM notes WHERE path = @path;")?;
+    
     statement.execute(named_params! { "@path": path})?;
 
     Ok(())

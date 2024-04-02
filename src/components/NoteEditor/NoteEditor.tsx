@@ -13,6 +13,7 @@ import { invoke } from "@tauri-apps/api";
 import { open } from "@tauri-apps/api/shell";
 import { IoCloseOutline } from "react-icons/io5";
 import { useOnClickOutside } from "../../hooks/use-on-click-outside";
+import Link from "@tiptap/extension-link";
 
 interface NoteEditorProps {
   note: Note;
@@ -39,6 +40,13 @@ const NoteEditor: FC<NoteEditorProps> = ({ note }) => {
         mode: "nodeSize",
         limit: 1000,
       }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        HTMLAttributes: {
+          class: "text-blue-500 font-normal",
+        },
+      })
     ],
     onUpdate: ({ editor }) => {
       note.content = editor.storage.markdown.getMarkdown();
