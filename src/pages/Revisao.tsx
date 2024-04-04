@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { invoke } from "@tauri-apps/api";
-import { getNodeName, getPath } from "../lib/utils";
+import { getNodeName } from "../lib/utils";
 import { readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
 import { SuperMemoGrade, supermemo } from "supermemo";
 import dayjs from "dayjs";

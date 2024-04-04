@@ -1,11 +1,5 @@
 import { AiOutlineLeft } from "react-icons/ai";
 import { useExplorerContext } from "../../context/ExplorerContext";
-import { HiOutlinePlus } from "react-icons/hi2";
-import Popover from "../Popover/Popover";
-import PopoverContent from "../Popover/PopoverContent";
-import PopoverTrigger from "../Popover/PopoverTrigger";
-import Tooltip from "../Tooltip";
-import CreateTag from "./Action/CreateTag";
 import Tag from "./Tag";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";

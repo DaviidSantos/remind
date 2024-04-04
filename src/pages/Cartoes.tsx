@@ -21,7 +21,7 @@ const Cartoes = () => {
 
   const createCard = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await invoke("add_card", { name: cardName }).catch((e) => {
+    await invoke("add_card", { name: cardName }).catch(() => {
       setError("Coleção já existe!");
     });
 

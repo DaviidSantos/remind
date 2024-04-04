@@ -35,8 +35,8 @@ const Anotacoes = () => {
   return (
     <div className="flex w-full">
       <OpenNotesContextProvider>
-        <ExplorerContainer>
-          <FileTreeContextProvider>
+        <FileTreeContextProvider>
+          <ExplorerContainer>
             <ExplorerOptions>
               <Tooltip tooltip="Tags">
                 <ExplorerOption>
@@ -82,13 +82,13 @@ const Anotacoes = () => {
             </ExplorerOptions>
 
             {currentView}
-          </FileTreeContextProvider>
-        </ExplorerContainer>
+          </ExplorerContainer>
 
-        <NoteEditorContainer>
-          <NoteEditorTabs />
-          <NoteEditorContent />
-        </NoteEditorContainer>
+          <NoteEditorContainer>
+            <NoteEditorTabs />
+            <NoteEditorContent />
+          </NoteEditorContainer>
+        </FileTreeContextProvider>
       </OpenNotesContextProvider>
     </div>
   );
